@@ -1,5 +1,5 @@
 <?php
-  include_once '../controller/usuario_controller.php';
+  include_once '../controller/vehiculo_controller.php';
   session_start();
 ?>
 
@@ -45,7 +45,7 @@
           <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
         </li>
         <li class="nav-item">
-          <a class="nav-link  active" href="../pages/profile.html">
+          <a class="nav-link" href="profile.php">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 46 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>customer-support</title>
@@ -66,7 +66,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link  " href="available_cars.php">
+          <a class="nav-link active" href="../pages/tables.html">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
               <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                 <title>office</title>
@@ -93,62 +93,49 @@
     </div>
   </aside>
   <div class="main-content position-relative bg-gray-100 max-height-vh-100 h-100">
-    
-    
-    <div class="container-fluid">
-      <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('../assets/img/curved-images/curved0.jpg'); background-position-y: 50%;">
-        <span class="mask bg-gradient-primary opacity-6"></span>
-      </div>
-      <div class="card card-body blur shadow-blur mx-4 mt-n6 overflow-hidden">
-        <div class="row gx-4">
-          <div class="col-auto">
-            <div class="avatar avatar-xl position-relative">
-              <img src="../assets/img/logos/userLogo.png" alt="profile_image" class="w-100 h-100 image-fluid border-radius-lg shadow-sm" style ="object-fit: cover">
-            </div>
-          </div>
-          <div class="col-auto my-auto">
-            <div class="h-100">
-              <h5 class="mb-1">
-                <?php echo $_SESSION['userName']; ?>
-              </h5>
-              
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-            <div class="nav-wrapper position-relative end-0">
-              <ul class="nav nav-pills nav-fill p-1 bg-transparent" role="tablist">
-              
-                <li class="nav-item">
-             
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12 mt-4">
           <div class="card mb-4">
             <div class="card-header pb-0 p-3">
-              <h6 class="mb-1">Rented cars</h6>
-              <p class="text-sm">Check your return dates</p>
+              <h6 class="mb-1">Available Cars</h6>
+              <p class="text-sm">Check disponibility</p>
             </div>
             <div class="card-body p-3">
               <div class="row">
+
                 <?php
-                  printVehicleCardsForUser();
+                  OptenerListaVehiculos();
                 ?>
-                <div class="col-xl-3 col-md-6 mb-xl-0 mb-4">
-                  <div class="card h-100 card-plain border">
-                    <div class="card-body d-flex flex-column justify-content-center text-center">
-                      <a href="available_cars.php">
-                        <i class="fa fa-plus text-secondary mb-3"></i>
-                        <h5 class=" text-secondary"> Rent a Car </h5>
-                      </a>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Rent Car</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <!-- Input field with the ID provided by the button's data attribute -->
+                        <input type="text" class="form-control" id="myModalBtnInput" style = "display: none">
+                        <label for="txtFechaEntrega">Delivery Date</label>
+                        <input type="date" name="txtFechaEntrega" id="txtFechaEntrega" class="form-control">
+                        <label for="txtFechaDevolución" class = "mt-xl-3">Return Date</label>
+                        <input type="date" name="txtFechaDevolución" id="txtFechaDevolución" class="form-control">
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+
               </div>
             </div>
           </div>
@@ -191,6 +178,19 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    $('#exampleModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget); // Button that triggered the modal
+      var inputID = button.data('input-id'); // Extract info from data-* attributes
+      var modal = $(this);
+      modal.find('.modal-body input').val(inputID);
+    });
+  </script>
+
 </body>
 
 </html>
